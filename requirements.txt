@@ -6,3 +6,4 @@ pytest
 pydub
 numpy
 pytest-mock
+pytest-qt
