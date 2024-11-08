@@ -56,10 +56,10 @@ class GuyMucsProcessor:
             base_name = os.path.splitext(os.path.basename(file))[0]
             instrument_file = os.path.join(output_dir, base_name, f"{self.instrument}.wav")
             other_file = os.path.join(output_dir, base_name, f"no_{self.instrument}.wav")
-            
+
             if os.path.exists(instrument_file):
                 os.rename(instrument_file, os.path.join(instrument_path, f"{base_name}_{self.instrument}.wav"))
-            
+
             # Combine other components to form the accompaniment track
             other_components = ["vocals", "drums", "bass", "other"]
             other_components.remove(self.instrument)  # Exclude the chosen instrument
@@ -67,7 +67,8 @@ class GuyMucsProcessor:
             self.combine_audio_files(output_dir, base_name, other_components, combined_other_path)
 
             # Update progress in GUI
-            progress_callback.emit(int((i + 1) / len(self.input_files) * 100))
+            progress_callback(int((i + 1) / len(self.input_files) * 100))  # Directly call instead of emit
+
 
     def combine_audio_files(self, output_dir, base_name, components, output_path):
         """
