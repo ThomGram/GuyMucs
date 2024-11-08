@@ -1,7 +1,7 @@
 name: CI Build and Test
 
 on:
-  push:  # Exécute le workflow à chaque push sur toutes les branches
+  push:
     branches: ["*"]
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
       shell: bash
 
     - name: Archive executable
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3  # Updated to v3
       with:
         name: GuyMucs-${{ matrix.os }}
         path: dist/GuyMucs*
