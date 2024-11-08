@@ -1,8 +1,10 @@
 name: CI Build and Test
 
 on:
+  push:
+    branches: ["dev"]
   pull_request:
-    branches: ["main", "dev"]
+    branches: ["main"]
 
 jobs:
   build:
@@ -25,7 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Start X virtual framebuffer
+      if: runner.os == 'Linux'  # Only use xvfb on Linux
+      run: |
+        sudo apt-get install -y xvfb
+        xvfb-run --auto-servernum pytest guymucs/tests
+
     - name: Run tests
+      if: runner.os != 'Linux'  # Skip xvfb on non-Linux OS
       run: |
         pytest guymucs/tests
 
@@ -36,7 +45,7 @@ jobs:
       shell: bash
 
     - name: Archive executable
-      uses: actions/upload-artifact@v3  # Updated to v3
+      uses: actions/upload-artifact@v3
       with:
         name: GuyMucs-${{ matrix.os }}
         path: dist/GuyMucs*
