@@ -1,0 +1,7 @@
+demucs
+PyQt5
+torch
+torchaudio
+pytest
+pydub
+numpy
