@@ -1,0 +1,48 @@
+# Dossiers et fichiers générés par PyInstaller
+/dist
+/build
+*.spec
+
+# Environnements virtuels
+venv/
+.env/
+*.env
+
+# Fichiers de configuration de l'environnement Conda
+conda-meta/
+*.yaml
+
+# Cache et fichiers temporaires
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Fichiers et dossiers générés par l'IDE
+.idea/
+.vscode/
+*.swp
+
+# Artifacts de test et de log
+*.log
+*.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+
+# Artifacts générés par GitHub Actions
+.github/workflows/*.yml~
+
+# Configurations de dépendances natives
+*.dll
+*.so
+*.dylib
+
+# Fichiers d'archive
+*.zip
+*.tar.gz
+*.egg-info
+*.egg
+
+# Autres fichiers non pertinents
+.DS_Store
+
