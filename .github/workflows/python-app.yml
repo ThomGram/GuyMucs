@@ -7,12 +7,15 @@ on:
     branches: ["main"]
   workflow_dispatch:  # Allows manual trigger
 
+permissions:
+  contents: write  # Grants permission to create releases
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]  # Only macOS and Windows
+        os: [macos-latest, windows-latest]
 
     steps:
     - name: Checkout code
@@ -41,17 +44,16 @@ jobs:
     - name: Archive executable
       uses: actions/upload-artifact@v3
       with:
-        name: GuyMucs-${{ matrix.os }}  # Name each artifact by OS
+        name: GuyMucs-${{ matrix.os }}
         path: dist/GuyMucs*
 
   publish:
-    needs: build  # Ensures publish runs after build and test
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Download built executables
       uses: actions/download-artifact@v3
       with:
-        # Use a wildcard to download all available OS-specific artifacts
         name: GuyMucs-windows-latest
         path: release-packages
 
