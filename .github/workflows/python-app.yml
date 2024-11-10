@@ -52,7 +52,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         # Use a wildcard to download all available OS-specific artifacts
-        name: GuyMucs  
+        name: [GuyMucs-windows-latest, GuyMucs-macos-latest]
         path: release-packages
 
     - name: Upload release to GitHub
