@@ -70,7 +70,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: GuyMucs-debian
-        path: ../*.deb
+        path: "../*.deb"
 
   build_rpm:
     runs-on: ubuntu-latest
@@ -92,7 +92,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: GuyMucs-rpm
-        path: *.rpm
+        path: "*.rpm"
 
   publish:
     needs: [build, build_deb, build_rpm]
