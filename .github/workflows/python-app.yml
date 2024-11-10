@@ -41,7 +41,7 @@ jobs:
     - name: Archive executable
       uses: actions/upload-artifact@v3
       with:
-        name: GuyMucs-${{ matrix.os }}
+        name: GuyMucs-${{ matrix.os }}  # Name each artifact by OS
         path: dist/GuyMucs*
 
   publish:
@@ -51,7 +51,8 @@ jobs:
     - name: Download built executables
       uses: actions/download-artifact@v3
       with:
-        name: GuyMucs-${{ matrix.os }}
+        # Use a wildcard to download all available OS-specific artifacts
+        name: GuyMucs-*  
         path: release-packages
 
     - name: Upload release to GitHub
