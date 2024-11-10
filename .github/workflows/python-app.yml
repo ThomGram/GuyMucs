@@ -1,10 +1,11 @@
-name: CI Build and Test
+name: CI Build, Test, and Publish
 
 on:
   push:
     branches: ["dev"]
   pull_request:
     branches: ["main"]
+  workflow_dispatch:  # Allows manual trigger
 
 jobs:
   build:
@@ -15,18 +16,19 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # Specific step to handle xvfb for Linux
     - name: Start X virtual framebuffer
       if: runner.os == 'Linux'  # Only use xvfb on Linux
       run: |
@@ -38,15 +40,48 @@ jobs:
       run: |
         pytest guymucs/tests
 
-    - name: Build executable with PyInstaller
+    - name: Build executable with PyInstaller (Optimize for size)
       run: |
         pip install pyinstaller
-        pyinstaller --onefile --name GuyMucs guymucs/main.py
+        # Include --strip to remove debugging symbols, and specify excludes for unnecessary libraries
+        if [[ "$RUNNER_OS" == "Linux" ]]; then
+          pyinstaller --onefile --strip --name GuyMucs \
+            --exclude-module some_unneeded_module \
+            guymucs/main.py
+        else
+          pyinstaller --onefile --name GuyMucs guymucs/main.py
+        fi
       shell: bash
+
+    # Additional step for Linux to strip any remaining symbols for further optimization
+    - name: Strip symbols (Linux only)
+      if: runner.os == 'Linux'
+      run: strip dist/GuyMucs
 
     - name: Archive executable
       uses: actions/upload-artifact@v3
       with:
         name: GuyMucs-${{ matrix.os }}
         path: dist/GuyMucs*
+
+  publish:
+    needs: build  # Ensures publish runs after build and test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download built executables
+      uses: actions/download-artifact@v3
+      with:
+        name: GuyMucs-${{ matrix.os }}
+        path: release-packages
+
+    - name: Upload release to GitHub
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "release-packages/*"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: v1.0.${{ github.run_number }}
+        name: "Release v1.0.${{ github.run_number }}"
+        body: "Automatic build for GuyMucs on Ubuntu, macOS, and Windows"
+        draft: false
+        prerelease: false
 
