@@ -1,7 +1,7 @@
 # Dossiers et fichiers générés par PyInstaller
 /dist
 /build
-*.spec
+
 
 # Environnements virtuels
 venv/

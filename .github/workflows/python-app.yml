@@ -38,7 +38,7 @@ jobs:
     - name: Build executable with PyInstaller
       run: |
         pip install pyinstaller
-        pyinstaller --onefile --name GuyMucs guymucs/main.py
+        pyinstaller GuyMucs.spec
       shell: bash
 
     - name: Archive executable
