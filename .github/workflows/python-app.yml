@@ -55,22 +55,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Debian packaging environment
+    - name: Install dependencies for Debian packaging
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential devscripts debhelper
+        sudo apt-get install -y ruby ruby-dev build-essential
+        sudo gem install --no-document fpm  # Install fpm via Ruby gem
 
     - name: Build Debian package
       run: |
-        debuild -us -uc -b
-      env:
-        DEB_BUILD_OPTIONS: "parallel=$(nproc)"
+        fpm -s dir -t deb -n GuyMucs -v 1.0 --prefix /usr/local/bin dist/GuyMucs
 
     - name: Upload Debian package
       uses: actions/upload-artifact@v3
       with:
         name: GuyMucs-debian
-        path: "../*.deb"
+        path: "**/*.deb"
 
   build_rpm:
     runs-on: ubuntu-latest
@@ -79,10 +78,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up RPM packaging environment
+    - name: Install dependencies for RPM packaging
       run: |
         sudo apt-get update
-        sudo apt-get install -y rpm
+        sudo apt-get install -y ruby ruby-dev rpm
+        sudo gem install --no-document fpm  # Install fpm via Ruby gem
 
     - name: Build RPM package
       run: |
@@ -92,7 +92,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: GuyMucs-rpm
-        path: "*.rpm"
+        path: "**/*.rpm"
 
   publish:
     needs: [build, build_deb, build_rpm]
